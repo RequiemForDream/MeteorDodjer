@@ -9,5 +9,7 @@ namespace Obstacles
         public Vector2 _viewportTo;
         public Vector3 _offset;
         public int MaxAmount;
+        public float SpawnDelay = 1f;
+        public float AmountToSpawn;
     }
 }

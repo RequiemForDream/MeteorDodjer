@@ -1,6 +1,7 @@
 ﻿using Character.Interfaces;
 using Core;
 using Core.Interfaces;
+using System;
 using UnityEngine;
 
 namespace Character
@@ -9,11 +10,14 @@ namespace Character
     {
         public CharacterView CharacterView { get; set; }
         public CharacterModel CharacterModel { get; set; }
+        public bool IsMovingRight { get => _isMovingRight; set => _isMovingRight = value; }
 
         private readonly Updater _updater;
         private readonly IInputService _inputService;
 
         private bool _isMovingRight = false;
+
+        public event Action<bool> OnTurned;
 
         public MainCharacter(CharacterView characterView, CharacterModel characterModel, Updater updater, IInputService inputService)
         {
@@ -25,8 +29,8 @@ namespace Character
 
         public void Initialize()
         {
-            _updater.AddListener(this);
             CharacterView.Initialize();
+            _updater.AddListener(this);
             CharacterView.OnDestroyHandler += OnDestroy;
             _inputService.OnScreenTap += Turn;
         }
@@ -39,6 +43,7 @@ namespace Character
         private void Turn()
         {
             _isMovingRight = !_isMovingRight;
+            OnTurned?.Invoke(_isMovingRight);
 
             if (_isMovingRight)
             {

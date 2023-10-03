@@ -15,3 +15,6 @@ MonoBehaviour:
   _viewportFrom: {x: 0, y: 1}
   _viewportTo: {x: 1, y: 0}
   _offset: {x: 0.7, y: 0.7, z: 0}
+  MaxAmount: 0
+  SpawnDelay: 1.5
+  AmountToSpawn: 0
