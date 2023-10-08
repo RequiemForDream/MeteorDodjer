@@ -5,6 +5,6 @@ namespace Obstacles
     [Serializable]
     public class ObstacleModel
     {
-        public float Speed = 1f;
+        public float LifeTime = 4f;
     }
 }

@@ -2,136 +2,99 @@
 using Core;
 using Core.Interfaces;
 using Factories.Interfaces;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Utils;
 
 namespace Obstacles
 {
     public class ObstacleSpawner : IUpdateListener
     {
         private readonly Updater _updater;
-        private readonly IFactory<Obstacle> _obstacleFactory;
         private readonly ICharacter _character;
         private readonly ObstacleSpawnerConfig _obstacleSpawnerConfig;
-        private readonly Camera _camera;
-        private Coroutine _coroutine;
+        private ObstaclePool _testPool;
 
-        private List<Obstacle> _obstacles = new List<Obstacle>();
+        private float _currentTime;
 
         public ObstacleSpawner(Updater updater, IFactory<Obstacle> obstacleFactory, ICharacter character, 
-            ObstacleSpawnerConfig obstacleSpawnerConfig, Camera camera)
+            ObstacleSpawnerConfig obstacleSpawnerConfig)
         {
-            _obstacleFactory = obstacleFactory;
             _updater = updater;
             _character = character;
             _obstacleSpawnerConfig = obstacleSpawnerConfig;
-            _camera = camera;
+            
+            _testPool = new ObstaclePool(_obstacleSpawnerConfig.AutoExpand, _obstacleSpawnerConfig.Count, obstacleFactory);
         }
 
         public void Initialize()
         {
-            _updater.AddListener(this);
-            _character.OnTurned += CountDirection;
+            _updater.AddUpdateListener(this);
+            _currentTime = _obstacleSpawnerConfig.SpawnDelay;
         }
 
         public void Tick(float deltaTime)
         {
-            
+            _currentTime -= deltaTime;
+            if (_currentTime < 0)
+            {
+                InitializeObstacle();
+                _currentTime = _obstacleSpawnerConfig.SpawnDelay;
+            }
         }
 
-        private void SpawnTest(bool isMovingRight)
+        private void InitializeObstacle()
         {
-            Obstacle obstacle = _obstacleFactory.Create();
-            _obstacles.Add(obstacle);
-            
-            obstacle.ObstacleView.transform.position += CalculatePosition(isMovingRight, out DirectionEnum direction);
-            Debug.Log(direction);
-            obstacle.Initialize(direction);
+            var cube = _testPool.GetFreeElement();
+            var pos = CalculatePosition(_character.IsMovingRight, out Vector2 direction);
+            cube.Initialize(direction, pos);
         }
 
-        private Vector3 CalculatePosition(bool isMovingRight, out DirectionEnum direction)
+        private Vector3 CalculatePosition(bool isMovingRight, out Vector2 direction)
         {
-            DirectionEnum _direction;
+            var characterPosition = _character.Transform.position;
+            var characterSpeed = _character.MovementSpeed;
             if (isMovingRight)
             {
-                var characterPosition = _character.CharacterView.transform.position + Vector3.right * 5f;
-                float randomY = Random.Range(characterPosition.y + 4f, characterPosition.y - 4f);
-                Vector3 last = new Vector3(characterPosition.x, randomY, 0f);
-                if (randomY > characterPosition.y)
-                {
-                    _direction = DirectionEnum.Down;
-                    direction = _direction;
-                    Debug.Log("Down");
-                    return last;
-                }
-                else if(randomY < characterPosition.y)
-                {
-                    _direction = DirectionEnum.Up;
-                    direction = _direction;
-                    return last;
-                }
-
-                _direction = DirectionEnum.Down;
-                direction = _direction;
-                return last;
+                var distanceAhead = characterPosition + Vector3.right * characterSpeed;
+                var randomOffset = _obstacleSpawnerConfig.ObstacleOffset;
+                float randomY = Random.Range(distanceAhead.y + randomOffset, distanceAhead.y - randomOffset);
+                direction = CalculateDirection(randomY, distanceAhead.y, isMovingRight); 
+                return new Vector3(distanceAhead.x, randomY, 0f);
             }
             else
             {
-                var characterPosition = _character.CharacterView.transform.position + Vector3.up * 5f;
-                float randomX = Random.Range(characterPosition.x + 4f, characterPosition.x - 4f);
-                Vector3 last = new Vector3(randomX, characterPosition.y, 0f);
-                
-                if (randomX < characterPosition.x)
-                {
-                    _direction = DirectionEnum.Right; 
-                    direction = _direction;
-                    return last;
-                }
-                else if (randomX > characterPosition.x)
-                {
-                    _direction = DirectionEnum.Left; 
-                    direction = _direction;
-                    return last;
-                }
-
-                direction = DirectionEnum.Left;
-                return last;
+                var distanceAhead = characterPosition + Vector3.up * characterSpeed;
+                var randomOffset = _obstacleSpawnerConfig.ObstacleOffset;
+                float randomX = Random.Range(distanceAhead.x + randomOffset, distanceAhead.x - randomOffset);
+                direction = CalculateDirection(randomX, distanceAhead.x, isMovingRight);
+                return new Vector3(randomX, distanceAhead.y, 0f);
             }
         }
 
-        private void CountDirection(bool isMovingRight)
+        private Vector2 CalculateDirection(float obstaclePosition, float characterPos, bool isMovingRight)
         {
+            var obstacleDirection = _obstacleSpawnerConfig.ObstacleDirection;
+            var obstacleSpeed = _obstacleSpawnerConfig.ObstacleSpeed;
             if (isMovingRight)
             {
-                SpawnObstacle(isMovingRight);
+                if (obstaclePosition > characterPos)
+                {
+                    return new Vector2(-obstacleDirection, -obstacleSpeed);
+                }
+                else
+                {
+                    return new Vector2(-obstacleDirection, obstacleSpeed);
+                }
             }
             else
             {
-                SpawnObstacle(isMovingRight);
-            }
-        }
-
-        private void SpawnObstacle(bool isMovingRight)
-        {
-            if (_coroutine != null)
-            {
-                CoroutineExtension.StopRoutine(_coroutine);
-                _coroutine = null;
-            }
-
-           _coroutine = CoroutineExtension.StartRoutine(SpawnRoutine(isMovingRight));
-        }
-
-        private IEnumerator SpawnRoutine(bool isMovingRight)
-        {
-            int obstacles = 0;
-            while(true)
-            {
-                SpawnTest(isMovingRight);
-                obstacles++;
-                yield return new WaitForSeconds(_obstacleSpawnerConfig.SpawnDelay);
+                if (obstaclePosition > characterPos)
+                {
+                    return new Vector2(-obstacleSpeed, -obstacleDirection);
+                }
+                else
+                {
+                    return new Vector2(obstacleSpeed, -obstacleDirection);
+                }
             }
         }
     }

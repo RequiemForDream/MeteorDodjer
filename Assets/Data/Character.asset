@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Character
   m_EditorClassIdentifier: 
   CharacterPrefab: {fileID: 1478989706651811407, guid: 3b192e8460797554a8f4a62272d1af72, type: 3}
+  CharacterModel:
+    Speed: 5

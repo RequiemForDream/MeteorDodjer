@@ -24,8 +24,7 @@ namespace Core
             IFactory<MainCharacter> mainCharacteFactory = new MainCharacterFactory(_characterConfig, _updater, inputService);
             MainCharacter mainCharacter = mainCharacteFactory.Create();
 
-            ObstacleSpawner obstacleSpawner = new ObstacleSpawner(_updater, obstacleFactory, mainCharacter, _spawnerConfig,
-                _cameraFollower.GetComponent<Camera>());
+            ObstacleSpawner obstacleSpawner = new ObstacleSpawner(_updater, obstacleFactory, mainCharacter, _spawnerConfig);
 
             Level level = new Level(mainCharacter, inputService, _cameraFollower, obstacleSpawner);
             level.Start();

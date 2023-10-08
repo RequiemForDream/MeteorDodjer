@@ -7,7 +7,8 @@ namespace Obstacles
     public class ObstacleView : MonoBehaviour, IDestroyable
     {
         public event Action OnDestroyHandler;
-        public bool IsInvisible = false;
+        public event Action OnEnabledHandler;
+        public event Action OnDisabledHandler;
 
         public Rigidbody2D Rigidbody2D { get; private set; } 
 
@@ -16,9 +17,19 @@ namespace Obstacles
             Rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
-        private void OnBecameInvisible()
+        public void Deactivate()
         {
-            IsInvisible = true;
+            gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            OnEnabledHandler?.Invoke();
+        }
+        
+        private void OnDisable()
+        {
+            OnDestroyHandler?.Invoke();
         }
 
         private void OnDestroy()

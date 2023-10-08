@@ -17,7 +17,7 @@ namespace Core
 
         public void Initialize()
         {
-            _updater.AddListener(this);
+            _updater.AddUpdateListener(this);
         }
 
         public void Tick(float deltaTime)

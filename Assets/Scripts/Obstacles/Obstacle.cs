@@ -1,16 +1,19 @@
 ﻿using Core;
 using Core.Interfaces;
+using System.Collections;
 using UnityEngine;
+using Utils;
 
 namespace Obstacles
 {
-    public class Obstacle : IUpdateListener
+    public class Obstacle : IFixedUpdateListener
     {
         public ObstacleView ObstacleView { get; set; }
         public ObstacleModel ObstacleModel { get; set; }
 
         private readonly Updater _updater;
-        private DirectionEnum _direction;
+        private Vector2 Direction;
+        private Coroutine _coroutine;
 
         public Obstacle(ObstacleView obstacleView, ObstacleModel obstacleModel, Updater updater)
         {
@@ -19,38 +22,42 @@ namespace Obstacles
             _updater = updater;
 
             ObstacleView.Initialize();
-            
             ObstacleView.OnDestroyHandler += Destroy;
+            ObstacleView.OnEnabledHandler += StartCoroutine;
+            ObstacleView.OnDisabledHandler += StopCoroutine;
         }
 
-        public void Initialize(DirectionEnum direction)
+        public void Initialize(Vector2 direction, Vector3 position)
         {
-            _direction = direction;
-            _updater.AddListener(this);
+            ObstacleView.transform.position = position;
+            _updater.AddFixedUpdateListener(this);
+            Direction = direction;
         }
 
-        public void Tick(float deltaTime)
+        public void FixedTick(float fixedDeltaTime)
         {
-            switch (_direction)
-            {
-                case DirectionEnum.Down:
-                    ObstacleView.Rigidbody2D.velocity = new Vector2(0, -2);
-                    break;
-                case DirectionEnum.Left:
-                    ObstacleView.Rigidbody2D.velocity = new Vector2(-2, 0);
-                    break;
-                case DirectionEnum.Right:
-                    ObstacleView.Rigidbody2D.velocity = new Vector2(2, 0);
-                    break;
-                case DirectionEnum.Up:
-                    ObstacleView.Rigidbody2D.velocity = new Vector2(0, 2);
-                    break;
-            }
+            ObstacleView.Rigidbody2D.velocity = Direction;
+        }
+
+        private void StartCoroutine()
+        {
+            _coroutine = CoroutineExtension.StartRoutine(LifeRoutine());
+        }
+
+        private IEnumerator LifeRoutine()
+        {
+            yield return new WaitForSeconds(ObstacleModel.LifeTime);          
+            ObstacleView.Deactivate();
+        }
+
+        private void StopCoroutine()
+        {
+            CoroutineExtension.StopRoutine(_coroutine);
         }
 
         private void Destroy()
         {
-            _updater?.RemoveListener(this);
+            _updater?.RemoveFixedUpdateListener(this);
             ObstacleView.OnDestroyHandler -= Destroy;
         }
     }

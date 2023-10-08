@@ -1,13 +1,13 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Character.Interfaces
 {
     public interface ICharacter
     {
-        CharacterView CharacterView { get; }
-        CharacterModel CharacterModel { get; }
-
+        event Action OnDied;
+        Transform Transform {  get; } 
         bool IsMovingRight { get; set;  }
-        event Action<bool> OnTurned;
+        float MovementSpeed { get; set; }
     }
 }

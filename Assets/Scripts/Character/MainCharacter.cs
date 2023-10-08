@@ -8,16 +8,26 @@ namespace Character
 {
     public class MainCharacter : IUpdateListener, ICharacter
     {
+        public event Action OnDied;
         public CharacterView CharacterView { get; set; }
         public CharacterModel CharacterModel { get; set; }
-        public bool IsMovingRight { get => _isMovingRight; set => _isMovingRight = value; }
+        public Transform Transform => CharacterView.transform;
+
+        public bool IsMovingRight 
+        { 
+            get => _isMovingRight; 
+            set => _isMovingRight = value; 
+        }
+
+        public float MovementSpeed
+        {
+            get => CharacterModel.Speed;
+            set => CharacterModel.Speed = value;
+        }
 
         private readonly Updater _updater;
         private readonly IInputService _inputService;
-
-        private bool _isMovingRight = false;
-
-        public event Action<bool> OnTurned;
+        private bool _isMovingRight;
 
         public MainCharacter(CharacterView characterView, CharacterModel characterModel, Updater updater, IInputService inputService)
         {
@@ -30,7 +40,7 @@ namespace Character
         public void Initialize()
         {
             CharacterView.Initialize();
-            _updater.AddListener(this);
+            _updater.AddUpdateListener(this);
             CharacterView.OnDestroyHandler += OnDestroy;
             _inputService.OnScreenTap += Turn;
         }
@@ -43,21 +53,20 @@ namespace Character
         private void Turn()
         {
             _isMovingRight = !_isMovingRight;
-            OnTurned?.Invoke(_isMovingRight);
 
             if (_isMovingRight)
             {
-                CharacterView.Rigidbody2D.velocity = new Vector2(5, 0);
+                CharacterView.Rigidbody2D.velocity = new Vector2(CharacterModel.Speed, 0);
             }
             else
             {
-                CharacterView.Rigidbody2D.velocity = new Vector2(0, 5);
+                CharacterView.Rigidbody2D.velocity = new Vector2(0, CharacterModel.Speed);
             }
         }
 
         private void OnDestroy()
         {
-            _updater.RemoveListener(this);
+            _updater.RemoveUpdateListener(this);
             CharacterView.OnDestroyHandler -= OnDestroy;
         }
     }
