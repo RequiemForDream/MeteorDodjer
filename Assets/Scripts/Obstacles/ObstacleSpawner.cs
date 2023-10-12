@@ -2,6 +2,7 @@
 using Core;
 using Core.Interfaces;
 using Factories.Interfaces;
+using Obstacles.Intefaces;
 using UnityEngine;
 
 namespace Obstacles
@@ -11,18 +12,18 @@ namespace Obstacles
         private readonly Updater _updater;
         private readonly ICharacter _character;
         private readonly ObstacleSpawnerConfig _obstacleSpawnerConfig;
-        private ObstaclePool _testPool;
+        private IObstaclePool _obstaclePool;
 
         private float _currentTime;
 
-        public ObstacleSpawner(Updater updater, IFactory<Obstacle> obstacleFactory, ICharacter character, 
+        public ObstacleSpawner(Updater updater, IFactory<IObstacle> obstacleFactory, ICharacter character, 
             ObstacleSpawnerConfig obstacleSpawnerConfig)
         {
             _updater = updater;
             _character = character;
             _obstacleSpawnerConfig = obstacleSpawnerConfig;
             
-            _testPool = new ObstaclePool(_obstacleSpawnerConfig.AutoExpand, _obstacleSpawnerConfig.Count, obstacleFactory);
+            _obstaclePool = new ObstaclePool(_obstacleSpawnerConfig.AutoExpand, _obstacleSpawnerConfig.Count, obstacleFactory);
         }
 
         public void Initialize()
@@ -43,12 +44,13 @@ namespace Obstacles
 
         private void InitializeObstacle()
         {
-            var cube = _testPool.GetFreeElement();
+            var obstacle = _obstaclePool.GetFreeElement();
             var pos = CalculatePosition(_character.IsMovingRight, out Vector2 direction);
-            cube.Initialize(direction, pos);
+            obstacle.SetPosition(pos);
+            obstacle.SetDirection(direction);
         }
 
-        private Vector3 CalculatePosition(bool isMovingRight, out Vector2 direction)
+        private Vector2 CalculatePosition(bool isMovingRight, out Vector2 direction)
         {
             var characterPosition = _character.Transform.position;
             var characterSpeed = _character.MovementSpeed;
@@ -58,7 +60,7 @@ namespace Obstacles
                 var randomOffset = _obstacleSpawnerConfig.ObstacleOffset;
                 float randomY = Random.Range(distanceAhead.y + randomOffset, distanceAhead.y - randomOffset);
                 direction = CalculateDirection(randomY, distanceAhead.y, isMovingRight); 
-                return new Vector3(distanceAhead.x, randomY, 0f);
+                return new Vector2(distanceAhead.x, randomY);
             }
             else
             {
@@ -66,7 +68,7 @@ namespace Obstacles
                 var randomOffset = _obstacleSpawnerConfig.ObstacleOffset;
                 float randomX = Random.Range(distanceAhead.x + randomOffset, distanceAhead.x - randomOffset);
                 direction = CalculateDirection(randomX, distanceAhead.x, isMovingRight);
-                return new Vector3(randomX, distanceAhead.y, 0f);
+                return new Vector2(randomX, distanceAhead.y);
             }
         }
 

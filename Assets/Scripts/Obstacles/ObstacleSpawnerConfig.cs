@@ -8,15 +8,15 @@ namespace Obstacles
         [Header("Spawn Stuff")]
         [SerializeField] private float _spawnDelay = 1f;
 
-        [Header("Offset")]
+        [Header("Random Offset")]
         [SerializeField] private float MaxOffset = 4f;
         [SerializeField] private float MinOffset = 1f;
 
-        [Header("Direction")]
+        [Header("Random Direction")]
         [SerializeField] private float MaxDirection = 1f;
         [SerializeField] private float MinDirection = 0f;
 
-        [Header("Speed")]
+        [Header("Random  Speed")]
         [SerializeField] private float _maxSpeed = 4f;
         [SerializeField] private float _minSpeed = 1f;
 

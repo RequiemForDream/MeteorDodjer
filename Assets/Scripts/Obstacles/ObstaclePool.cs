@@ -1,17 +1,18 @@
 ﻿using Factories.Interfaces;
+using Obstacles.Intefaces;
 using System.Collections.Generic;
 
 namespace Obstacles
 {
-    public class ObstaclePool
+    public class ObstaclePool : IObstaclePool
     {
-        private readonly IFactory<Obstacle> _obstacleFactory;
+        private readonly IFactory<IObstacle> _obstacleFactory;
         private readonly int _poolCount;
         private readonly bool _autoExpand;
 
-        private List<Obstacle> _pool = new List<Obstacle>();
+        private List<IObstacle> _pool = new List<IObstacle>();
 
-        public ObstaclePool(bool autoExpand, int poolCount, IFactory<Obstacle> obstacleFactory)
+        public ObstaclePool(bool autoExpand, int poolCount, IFactory<IObstacle> obstacleFactory)
         {
             _autoExpand = autoExpand;
             _poolCount = poolCount;
@@ -28,7 +29,7 @@ namespace Obstacles
             }
         }
 
-        private Obstacle SpawnObstacle(bool isActiveByDefault = false)
+        private IObstacle SpawnObstacle(bool isActiveByDefault = false)
         {
             var obstacle = _obstacleFactory.Create();
             obstacle.ObstacleView.gameObject.SetActive(isActiveByDefault);
@@ -36,7 +37,7 @@ namespace Obstacles
             return obstacle;
         }
 
-        public Obstacle GetFreeElement()
+        public IObstacle GetFreeElement()
         {
             if (HasFreeElement(out var element))
             {
@@ -48,10 +49,10 @@ namespace Obstacles
                 return SpawnObstacle(true);
             }
 
-            throw new System.Exception($"There is no free elements in pool of type {typeof(Obstacle)}");
+            throw new System.Exception($"There is no free elements in pool of type {typeof(IObstacle)}");
         }
 
-        public bool HasFreeElement(out Obstacle element)
+        private bool HasFreeElement(out IObstacle element)
         {
             foreach (var obstacle in _pool)
             {

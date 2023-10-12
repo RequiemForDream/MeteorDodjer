@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Character
 {
@@ -6,5 +7,6 @@ namespace Character
     public class CharacterModel
     {
         public float Speed;
+        public Vector2 PauseVelocity => Vector2.zero;
     }
 }

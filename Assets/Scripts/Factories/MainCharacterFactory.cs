@@ -23,7 +23,8 @@ namespace Factories
         {
             CharacterView characterView = Object.Instantiate(_characterConfig.CharacterPrefab);
 
-            MainCharacter mainCharacter = new MainCharacter(characterView, _characterConfig.CharacterModel, _updater, _inputService);
+            MainCharacter mainCharacter = new MainCharacter(characterView, _characterConfig.CharacterModel,
+                _updater, _inputService);
 
             return mainCharacter;
         }

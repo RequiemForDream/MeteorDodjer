@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Character
 {
-    public class MainCharacter : IUpdateListener, ICharacter
+    public class MainCharacter : IFixedUpdateListener, ICharacter
     {
         public event Action OnDied;
-        public CharacterView CharacterView { get; set; }
-        public CharacterModel CharacterModel { get; set; }
+        public CharacterView CharacterView { get; private set; }
+        public CharacterModel CharacterModel { get; private set; }
         public Transform Transform => CharacterView.transform;
 
         public bool IsMovingRight 
@@ -40,33 +40,31 @@ namespace Character
         public void Initialize()
         {
             CharacterView.Initialize();
-            _updater.AddUpdateListener(this);
+            _updater.AddFixedUpdateListener(this);
             CharacterView.OnDestroyHandler += OnDestroy;
             _inputService.OnScreenTap += Turn;
         }
 
-        public void Tick(float deltaTime)
+        public void FixedTick(float deltaTime)
         {
-            
+            if (_isMovingRight)
+            {
+                CharacterView.Rigidbody2D.velocity = new Vector2(CharacterModel.Speed, 0f);
+            }
+            else
+            {
+                CharacterView.Rigidbody2D.velocity = new Vector2(0f, CharacterModel.Speed);
+            }
         }
 
         private void Turn()
         {
             _isMovingRight = !_isMovingRight;
-
-            if (_isMovingRight)
-            {
-                CharacterView.Rigidbody2D.velocity = new Vector2(CharacterModel.Speed, 0);
-            }
-            else
-            {
-                CharacterView.Rigidbody2D.velocity = new Vector2(0, CharacterModel.Speed);
-            }
         }
 
         private void OnDestroy()
         {
-            _updater.RemoveUpdateListener(this);
+            _updater.RemoveFixedUpdateListener(this);
             CharacterView.OnDestroyHandler -= OnDestroy;
         }
     }

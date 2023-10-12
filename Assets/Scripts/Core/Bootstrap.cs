@@ -2,6 +2,7 @@ using Character;
 using Factories;
 using Factories.Interfaces;
 using Obstacles;
+using Obstacles.Intefaces;
 using UnityEngine;
 using Utils;
 
@@ -19,7 +20,7 @@ namespace Core
         {
             InputService inputService = new InputService(_updater);
 
-            IFactory<Obstacle> obstacleFactory = new ObstacleFactory(_updater, _obstacleConfig);
+            IFactory<IObstacle> obstacleFactory = new ObstacleFactory(_updater, _obstacleConfig);
 
             IFactory<MainCharacter> mainCharacteFactory = new MainCharacterFactory(_characterConfig, _updater, inputService);
             MainCharacter mainCharacter = mainCharacteFactory.Create();

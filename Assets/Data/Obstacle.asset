@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Obstacle
   m_EditorClassIdentifier: 
   ObstaclePrefab: {fileID: 1460877459648175247, guid: b7a1e96b5403e094b8365d08f512277e, type: 3}
+  ObstacleModel:
+    LifeTime: 4

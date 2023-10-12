@@ -1,36 +1,36 @@
 ﻿using Core;
 using Core.Interfaces;
-using System.Collections;
+using Obstacles.Intefaces;
 using UnityEngine;
-using Utils;
 
 namespace Obstacles
 {
-    public class Obstacle : IFixedUpdateListener
+    public class Obstacle : IFixedUpdateListener, IObstacle
     {
         public ObstacleView ObstacleView { get; set; }
-        public ObstacleModel ObstacleModel { get; set; }
+        public ObstacleModel ObstacleModel { get; private set; }
 
         private readonly Updater _updater;
         private Vector2 Direction;
-        private Coroutine _coroutine;
 
         public Obstacle(ObstacleView obstacleView, ObstacleModel obstacleModel, Updater updater)
         {
             ObstacleView = obstacleView;
             ObstacleModel = obstacleModel;
             _updater = updater;
-
             ObstacleView.Initialize();
             ObstacleView.OnDestroyHandler += Destroy;
-            ObstacleView.OnEnabledHandler += StartCoroutine;
-            ObstacleView.OnDisabledHandler += StopCoroutine;
+            _updater.AddFixedUpdateListener(this);
+            ObstacleView.SetLifeTime(ObstacleModel.LifeTime);
         }
 
-        public void Initialize(Vector2 direction, Vector3 position)
+        public void SetPosition(Vector2 position)
         {
             ObstacleView.transform.position = position;
-            _updater.AddFixedUpdateListener(this);
+        }
+
+        public void SetDirection(Vector2 direction)
+        {
             Direction = direction;
         }
 
@@ -39,25 +39,9 @@ namespace Obstacles
             ObstacleView.Rigidbody2D.velocity = Direction;
         }
 
-        private void StartCoroutine()
-        {
-            _coroutine = CoroutineExtension.StartRoutine(LifeRoutine());
-        }
-
-        private IEnumerator LifeRoutine()
-        {
-            yield return new WaitForSeconds(ObstacleModel.LifeTime);          
-            ObstacleView.Deactivate();
-        }
-
-        private void StopCoroutine()
-        {
-            CoroutineExtension.StopRoutine(_coroutine);
-        }
-
         private void Destroy()
         {
-            _updater?.RemoveFixedUpdateListener(this);
+            _updater.RemoveFixedUpdateListener(this);
             ObstacleView.OnDestroyHandler -= Destroy;
         }
     }

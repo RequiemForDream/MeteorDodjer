@@ -1,14 +1,15 @@
 ﻿using Core;
 using Factories.Interfaces;
 using Obstacles;
+using Obstacles.Intefaces;
 using Object = UnityEngine.Object;
 
 namespace Factories 
 {
-    public class ObstacleFactory : IFactory<Obstacle>
+    public class ObstacleFactory : IFactory<IObstacle>
     {
         private readonly Updater _updater;
-        public readonly ObstacleConfig _obstacleConfig;
+        private readonly ObstacleConfig _obstacleConfig;
 
         public ObstacleFactory(Updater updater, ObstacleConfig obstacleConfig)
         {
@@ -16,11 +17,11 @@ namespace Factories
             _obstacleConfig = obstacleConfig;
         }
 
-        public Obstacle Create()
+        public IObstacle Create()
         {
             ObstacleView obstacleView = Object.Instantiate(_obstacleConfig.ObstaclePrefab);
 
-            Obstacle obstacle = new Obstacle(obstacleView, _obstacleConfig.ObstacleModel, _updater);
+            IObstacle obstacle = new Obstacle(obstacleView, _obstacleConfig.ObstacleModel, _updater);
 
             return obstacle;
         }

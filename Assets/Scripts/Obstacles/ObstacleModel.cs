@@ -1,10 +1,12 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Obstacles
 {
     [Serializable]
     public class ObstacleModel
     {
-        public float LifeTime = 4f;
+        [SerializeField] private float _lifeTime = 4f;
+        public float LifeTime => _lifeTime;
     }
 }

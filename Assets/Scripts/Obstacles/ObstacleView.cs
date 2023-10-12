@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces;
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Obstacles
@@ -7,8 +8,7 @@ namespace Obstacles
     public class ObstacleView : MonoBehaviour, IDestroyable
     {
         public event Action OnDestroyHandler;
-        public event Action OnEnabledHandler;
-        public event Action OnDisabledHandler;
+        private float _lifeTime;
 
         public Rigidbody2D Rigidbody2D { get; private set; } 
 
@@ -17,19 +17,30 @@ namespace Obstacles
             Rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
-        public void Deactivate()
+        public void SetLifeTime(float lifeTime)
         {
-            gameObject.SetActive(false);
+            _lifeTime = lifeTime;
+        }
+
+        public void Deactivate()
+        {   
+            gameObject.SetActive(false);  
+        }
+
+        private IEnumerator LifeRoutine()
+        {
+            yield return new WaitForSeconds(4f);
+            Deactivate();
         }
 
         private void OnEnable()
         {
-            OnEnabledHandler?.Invoke();
+            StartCoroutine(LifeRoutine());
         }
         
         private void OnDisable()
         {
-            OnDestroyHandler?.Invoke();
+            StopCoroutine(LifeRoutine());  
         }
 
         private void OnDestroy()
