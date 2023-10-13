@@ -18,6 +18,12 @@ namespace Obstacles
             ObstacleView = obstacleView;
             ObstacleModel = obstacleModel;
             _updater = updater;
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             ObstacleView.Initialize();
             ObstacleView.OnDestroyHandler += Destroy;
             _updater.AddFixedUpdateListener(this);

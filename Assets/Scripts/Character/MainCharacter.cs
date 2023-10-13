@@ -42,6 +42,7 @@ namespace Character
             CharacterView.Initialize();
             _updater.AddFixedUpdateListener(this);
             CharacterView.OnDestroyHandler += OnDestroy;
+            CharacterView.ObstacleDetector.OnCollided += Die;
             _inputService.OnScreenTap += Turn;
         }
 
@@ -60,6 +61,12 @@ namespace Character
         private void Turn()
         {
             _isMovingRight = !_isMovingRight;
+        }
+
+        private void Die()
+        {
+            Debug.Log("daas");
+            OnDied?.Invoke();
         }
 
         private void OnDestroy()

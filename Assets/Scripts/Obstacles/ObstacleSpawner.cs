@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Obstacles
 {
-    public class ObstacleSpawner : IUpdateListener
+    public class ObstacleSpawner : IUpdateListener, IInitializable
     {
         private readonly Updater _updater;
         private readonly ICharacter _character;

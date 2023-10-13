@@ -26,6 +26,7 @@ namespace Core
             MainCharacter mainCharacter = mainCharacteFactory.Create();
 
             ObstacleSpawner obstacleSpawner = new ObstacleSpawner(_updater, obstacleFactory, mainCharacter, _spawnerConfig);
+            _cameraFollower.Initialize(mainCharacter.Transform);
 
             Level level = new Level(mainCharacter, inputService, _cameraFollower, obstacleSpawner);
             level.Start();

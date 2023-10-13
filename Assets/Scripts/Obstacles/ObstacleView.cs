@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Obstacles
 {
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Collider2D))]
     public class ObstacleView : MonoBehaviour, IDestroyable
     {
         public event Action OnDestroyHandler;
@@ -29,7 +31,7 @@ namespace Obstacles
 
         private IEnumerator LifeRoutine()
         {
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(_lifeTime);
             Deactivate();
         }
 

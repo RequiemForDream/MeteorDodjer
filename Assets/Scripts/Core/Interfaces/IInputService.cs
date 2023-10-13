@@ -2,7 +2,7 @@
 
 namespace Core.Interfaces
 {
-    public interface IInputService
+    public interface IInputService : IInitializable
     {
         event Action OnScreenTap;
     }

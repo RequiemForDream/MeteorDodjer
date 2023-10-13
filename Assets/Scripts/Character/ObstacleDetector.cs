@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Character
 {
+    [RequireComponent(typeof(Collider2D))]
     public class ObstacleDetector : MonoBehaviour, IDetector
     {
         public event Action OnCollided;

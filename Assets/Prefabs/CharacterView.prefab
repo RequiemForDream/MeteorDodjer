@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2144023630133900036}
   - component: {fileID: 669624511669395615}
   - component: {fileID: 3315416744444517719}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CharacterModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 3287756168910153454}
   - component: {fileID: 1076564070268502675}
   - component: {fileID: 6069322073545489183}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CharacterView
   m_TagString: Untagged
   m_Icon: {fileID: 0}

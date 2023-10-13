@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Core.Interfaces;
+using System;
 using UnityEngine;
 
 namespace Character.Interfaces
 {
-    public interface ICharacter
+    public interface ICharacter : IInitializable
     {
         event Action OnDied;
         Transform Transform {  get; } 
