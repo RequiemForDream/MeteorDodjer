@@ -7,29 +7,41 @@ using UnityEngine;
 
 namespace Obstacles
 {
-    public class ObstacleSpawner : IUpdateListener, IInitializable
+    public class ObstacleSpawner : IObstacleSpawner
     {
         private readonly Updater _updater;
         private readonly ICharacter _character;
         private readonly ObstacleSpawnerConfig _obstacleSpawnerConfig;
+        private readonly IListenersHandler<IClearable> _clearer;
+        private readonly IListenersHandler<IInitializable> _initializator;
         private IObstaclePool _obstaclePool;
 
         private float _currentTime;
 
         public ObstacleSpawner(Updater updater, IFactory<IObstacle> obstacleFactory, ICharacter character, 
-            ObstacleSpawnerConfig obstacleSpawnerConfig)
+            ObstacleSpawnerConfig obstacleSpawnerConfig, IListenersHandler<IInitializable> initializator,
+            IListenersHandler<IClearable> clearer)
         {
             _updater = updater;
             _character = character;
             _obstacleSpawnerConfig = obstacleSpawnerConfig;
-            
+            _initializator = initializator;
+            _clearer = clearer;
+            _initializator.AddListener(this);
+
             _obstaclePool = new ObstaclePool(_obstacleSpawnerConfig.AutoExpand, _obstacleSpawnerConfig.Count, obstacleFactory);
         }
 
         public void Initialize()
         {
             _updater.AddUpdateListener(this);
+            _clearer.AddListener(this);
             _currentTime = _obstacleSpawnerConfig.SpawnDelay;
+        }
+
+        public void SetCharacter(ICharacter character)
+        {
+
         }
 
         public void Tick(float deltaTime)
@@ -98,6 +110,14 @@ namespace Obstacles
                     return new Vector2(obstacleSpeed, -obstacleDirection);
                 }
             }
+        }
+
+        public void Clear()
+        {
+            _obstaclePool.Clear();
+            _updater.RemoveUpdateListener(this);
+
+            _currentTime = 0f;
         }
     }
 }

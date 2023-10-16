@@ -45,6 +45,11 @@ namespace Obstacles
             StopCoroutine(LifeRoutine());  
         }
 
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
         private void OnDestroy()
         {
             OnDestroyHandler?.Invoke();

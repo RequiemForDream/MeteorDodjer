@@ -1,6 +1,7 @@
 ﻿using Factories.Interfaces;
 using Obstacles.Intefaces;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Obstacles
 {
@@ -9,6 +10,7 @@ namespace Obstacles
         private readonly IFactory<IObstacle> _obstacleFactory;
         private readonly int _poolCount;
         private readonly bool _autoExpand;
+        private GameObject _parent = new GameObject("Obstacle Pool");
 
         private List<IObstacle> _pool = new List<IObstacle>();
 
@@ -33,6 +35,7 @@ namespace Obstacles
         {
             var obstacle = _obstacleFactory.Create();
             obstacle.ObstacleView.gameObject.SetActive(isActiveByDefault);
+            obstacle.SetParent(_parent.transform);
             _pool.Add(obstacle);
             return obstacle;
         }
@@ -66,6 +69,14 @@ namespace Obstacles
 
             element = null;
             return false;
+        }
+
+        public void Clear()
+        {
+            foreach (var obstacle in _pool)
+            {
+                obstacle.ObstacleView.Destroy();
+            }
         }
     }
 }

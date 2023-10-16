@@ -1,35 +1,31 @@
-﻿using Core;
-using Core.Interfaces;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Utils
 {
-    public class CameraFollower : MonoBehaviour, IUpdateListener
+    public class CameraFollower : MonoBehaviour
     {
-        [SerializeField] private Vector3 _offset;
         private Transform _followTarget;
-        private Updater _updater;
+        private CameraModel _cameraModel;
 
-        public void Initialize(Transform followTarget)
+        public void Initialize(Transform followTarget, CameraModel cameraModel)
         {
             _followTarget = followTarget;
-        }
-
-        public void Tick(float deltaTime)
-        {
-            
+            _cameraModel = cameraModel;
         }
 
         private void FixedUpdate()
         {
-            Move(Time.fixedDeltaTime);
+            if (_followTarget != null)
+            {
+                Move(Time.fixedDeltaTime);
+            }
         }
 
         private void Move(float deltaTime)
         {
-            var tm = deltaTime * 10;
+            var tm = deltaTime * _cameraModel.Distance;
 
-            var focusPoint = Vector3.Lerp(transform.position, _followTarget.position + _offset, tm);
+            var focusPoint = Vector3.Lerp(transform.position, _followTarget.position + _cameraModel.Offset, tm);
             transform.position = focusPoint;
         }
     }

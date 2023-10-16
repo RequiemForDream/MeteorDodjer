@@ -31,6 +31,11 @@ namespace Core
             }
         }
 
+        public void Clear()
+        {
+            _updater.RemoveUpdateListener(this);
+        }
+
         private bool NotOverUI()
         {
             var eventData = new PointerEventData(EventSystem.current);

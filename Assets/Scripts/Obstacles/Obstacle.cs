@@ -40,6 +40,11 @@ namespace Obstacles
             Direction = direction;
         }
 
+        public void SetParent(Transform parent)
+        {
+            ObstacleView.transform.SetParent(parent);
+        }
+
         public void FixedTick(float fixedDeltaTime)
         {
             ObstacleView.Rigidbody2D.velocity = Direction;

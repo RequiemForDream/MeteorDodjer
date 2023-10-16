@@ -19,6 +19,11 @@ namespace Character
             ObstacleDetector = GetComponent<IDetector>();
         }
 
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
         private void OnDestroy()
         {
             OnDestroyHandler?.Invoke();

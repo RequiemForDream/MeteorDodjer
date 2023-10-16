@@ -27,14 +27,20 @@ namespace Character
 
         private readonly Updater _updater;
         private readonly IInputService _inputService;
+        private readonly IListenersHandler<IInitializable> _initializator;
+        private readonly IListenersHandler<IClearable> _clearer;
         private bool _isMovingRight;
 
-        public MainCharacter(CharacterView characterView, CharacterModel characterModel, Updater updater, IInputService inputService)
+        public MainCharacter(CharacterView characterView, CharacterModel characterModel, Updater updater, IInputService inputService,
+            IListenersHandler<IInitializable> initializator, IListenersHandler<IClearable> clearer)
         {
             CharacterView = characterView;
             CharacterModel = characterModel;
             _updater = updater;
             _inputService = inputService;
+            _clearer = clearer;
+            _initializator = initializator;
+            _initializator.AddListener(this);
         }
 
         public void Initialize()
@@ -67,6 +73,13 @@ namespace Character
         {
             Debug.Log("daas");
             OnDied?.Invoke();
+        }
+
+        public void Clear()
+        {
+            CharacterView.Destroy();
+            _clearer.RemoveListener(this);
+            _initializator.RemoveListener(this);
         }
 
         private void OnDestroy()

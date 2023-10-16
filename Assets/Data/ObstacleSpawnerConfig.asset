@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15122fcd365d2fa4f8ddfdb2713b0a4d, type: 3}
   m_Name: ObstacleSpawnerConfig
   m_EditorClassIdentifier: 
-  _spawnDelay: 0.55
-  MaxOffset: 4
-  MinOffset: 1
+  _spawnDelay: 0.6
+  MaxOffset: 1
+  MinOffset: 0
   MaxDirection: 1
   MinDirection: 0
   _maxSpeed: 2.5

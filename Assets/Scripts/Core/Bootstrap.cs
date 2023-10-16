@@ -1,8 +1,12 @@
 using Character;
+using Character.Interfaces;
+using Core.Interfaces;
 using Factories;
 using Factories.Interfaces;
+using Factories.UI;
 using Obstacles;
 using Obstacles.Intefaces;
+using UI;
 using UnityEngine;
 using Utils;
 
@@ -10,26 +14,36 @@ namespace Core
 {
     public class Bootstrap : MonoBehaviour
     {
-        [SerializeField] private CharacterConfig _characterConfig;
-        [SerializeField] private ObstacleConfig _obstacleConfig;
-        [SerializeField] private ObstacleSpawnerConfig _spawnerConfig;
         [SerializeField] private Updater _updater;
         [SerializeField] private CameraFollower _cameraFollower;
 
+        [Header("Configurations")]
+        [SerializeField] private CharacterConfig _characterConfig;
+        [SerializeField] private ObstacleConfig _obstacleConfig;
+        [SerializeField] private ObstacleSpawnerConfig _spawnerConfig;
+        [SerializeField] private CameraConfig _cameraConfig;
+        [SerializeField] private UIConfig _uiConfig;
+
         private void Awake()
         {
+            Initializator initializator = new Initializator();
+            Clearer clearer = new Clearer();
+            UIFactory uIFactory = new UIFactory(_uiConfig);
+
             InputService inputService = new InputService(_updater);
 
             IFactory<IObstacle> obstacleFactory = new ObstacleFactory(_updater, _obstacleConfig);
 
-            IFactory<MainCharacter> mainCharacteFactory = new MainCharacterFactory(_characterConfig, _updater, inputService);
-            MainCharacter mainCharacter = mainCharacteFactory.Create();
+            IFactory<ICharacter> mainCharacteFactory = new MainCharacterFactory(_characterConfig, _updater, inputService);
+            ICharacter mainCharacter = mainCharacteFactory.Create();
 
-            ObstacleSpawner obstacleSpawner = new ObstacleSpawner(_updater, obstacleFactory, mainCharacter, _spawnerConfig);
-            _cameraFollower.Initialize(mainCharacter.Transform);
+            ObstacleSpawner obstacleSpawner = new ObstacleSpawner(_updater, obstacleFactory, mainCharacter, _spawnerConfig, initializator,
+                clearer);
+            _cameraFollower.Initialize(mainCharacter.Transform, _cameraConfig.CameraModel);
 
-            Level level = new Level(mainCharacter, inputService, _cameraFollower, obstacleSpawner);
-            level.Start();
+            IClearable[] clearables = new IClearable[] { mainCharacter, obstacleSpawner };
+            IInitializable[] initializables = new IInitializable[] {mainCharacter, obstacleSpawner, inputService }; 
+            Level level = new Level(mainCharacter, initializables, clearables, uIFactory, mainCharacteFactory);
         }
     }
 }
