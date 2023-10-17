@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace Character.Interfaces
 {
-    public interface ICharacter : IInitializable, IClearable
+    public interface ICharacter : IInitializable, IClearable, IFixedUpdateListener
     {
         event Action OnDied;
         Transform Transform {  get; } 
         bool IsMovingRight { get; set;  }
-        float MovementSpeed { get; set; }
+        float MovementSpeed { get; }
     }
 }

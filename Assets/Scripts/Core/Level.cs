@@ -1,62 +1,66 @@
-﻿using Character;
-using Character.Interfaces;
-using Core.Interfaces;
-using Factories.Interfaces;
-using Obstacles;
+﻿using Character.Interfaces;
 using StateMachine;
 
 namespace Core
 {
     public class Level
     {
-        private readonly ICharacter _character;
-        private readonly InputService _inputService;
-        private readonly ObstacleSpawner _obstacleSpawner;
         private readonly UIFactory _uiFactory;
-        private readonly IInitializable[] _initializables;
-        private readonly IClearable[] _clearables;
-        private readonly IFactory<ICharacter> _characterFactory;
+        private readonly SceneInitializator _initializator;
+        private readonly SceneClearer _clearer;
+        private readonly ICharacter _character;
 
         private GameStateMachine _gameStateMachine;
 
-        public Level(ICharacter character, IInitializable[] initializables, IClearable[] clearables, UIFactory uiFactory,
-            IFactory<ICharacter> characterFactory)
-        {
-            //_character = character;
-            //_inputService = inputService;
-            //_obstacleSpawner = obstacleSpawner;
-            _initializables = initializables;
-            _clearables = clearables;
+        public Level(UIFactory uiFactory,
+            SceneInitializator initializator, SceneClearer clearer, ICharacter character)
+        {          
             _uiFactory = uiFactory;
-            _characterFactory = characterFactory;
+            _initializator = initializator;
+            _clearer = clearer;
+            _character = character;
 
-            _gameStateMachine = new GameStateMachine();
-            InitializeStates();
-            character.OnDied += SetEndState;
+
         }
 
-        public void InitializeStates()
+        public void Start()
         {
-            //IInitializable[] initializables = new IInitializable[] {_character, _inputService, _obstacleSpawner};
-            InitializeState initializeState = new InitializeState(_initializables);
-            GameplayState gameplayState = new GameplayState();
-            GameEndState gameEndState = new GameEndState(_clearables, _uiFactory.GameEndScreen);
-            InitializeUIState initializeUIState = new InitializeUIState(_uiFactory);
+            _gameStateMachine = new GameStateMachine();
+            InitializeStates();
+            SubscribeStates();
+        }
 
-            _gameStateMachine.AddState<InitializeState>(initializeState);
-            _gameStateMachine.AddState<GameplayState>(gameplayState);
+        private void InitializeStates()
+        {
+            GameplayState initializeState = new GameplayState(_initializator, _clearer);
+            GameEndState gameEndState = new GameEndState(_uiFactory.GameEndScreen);
+            StartState initializeUIState = new StartState(_uiFactory);
+
+            _gameStateMachine.AddState<GameplayState>(initializeState);
             _gameStateMachine.AddState<GameEndState>(gameEndState);
-            _gameStateMachine.AddState<InitializeUIState>(initializeUIState);
-
+            _gameStateMachine.AddState<StartState>(initializeUIState);
+            
             SetInitializeState();
+        }
+
+        private void SubscribeStates()
+        {
+            _uiFactory.MenuScreen.OnGameStartPressed += SetGameplayState;
+            _uiFactory.GameEndScreen.OnRestartButtonPressed += SetGameplayState;
+            _character.OnDied += SetEndGameState;
         }
 
         private void SetInitializeState()
         {
-            _gameStateMachine.ChangeState<InitializeUIState>();
+            _gameStateMachine.ChangeState<StartState>();
         }
 
-        private void SetEndState()
+        private void SetGameplayState()
+        {
+            _gameStateMachine.ChangeState<GameplayState>();
+        }
+
+        private void SetEndGameState()
         {
             _gameStateMachine.ChangeState<GameEndState>();
         }

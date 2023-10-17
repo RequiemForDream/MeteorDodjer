@@ -6,22 +6,19 @@ using UnityEngine;
 namespace Character
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent (typeof(ObstacleDetector))]
+    [RequireComponent(typeof(ObstacleDetector))]
     public class CharacterView : MonoBehaviour, IDestroyable
-    { 
+    {
         public event Action OnDestroyHandler;
         public Rigidbody2D Rigidbody2D { get; private set; }
+        public TrailRenderer TrailRenderer { get; private set; } 
         public IDetector ObstacleDetector { get; private set; }
 
         public void Initialize()
         {
             Rigidbody2D = GetComponent<Rigidbody2D>();
             ObstacleDetector = GetComponent<IDetector>();
-        }
-
-        public void Destroy()
-        {
-            Destroy(gameObject);
+            TrailRenderer = GetComponentInChildren<TrailRenderer>();
         }
 
         private void OnDestroy()

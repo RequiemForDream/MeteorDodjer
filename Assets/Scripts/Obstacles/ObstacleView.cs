@@ -47,7 +47,7 @@ namespace Obstacles
 
         public void Destroy()
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
 
         private void OnDestroy()

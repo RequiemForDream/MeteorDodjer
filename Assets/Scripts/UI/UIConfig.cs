@@ -2,7 +2,7 @@
 
 namespace UI
 {
-    [CreateAssetMenu(fileName = "UI Config", menuName = "UI Config / New UI Config")]
+    [CreateAssetMenu(fileName = "UI Config", menuName = "UI / New UI Config")]
     public class UIConfig : ScriptableObject    
     {
         [SerializeField] private Canvas _canvas;

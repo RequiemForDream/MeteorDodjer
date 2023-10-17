@@ -6,6 +6,9 @@ namespace Character
     [Serializable]
     public class CharacterModel
     {
-        public float Speed;
+        [SerializeField] private float _speed;
+        [SerializeField] private Vector2 _startPosition;
+        public float Speed => _speed;
+        public Vector2 StartPosition => _startPosition;
     }
 }

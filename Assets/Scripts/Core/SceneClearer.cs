@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public class Clearer : IListenersHandler<IClearable> 
+    public class SceneClearer : IListenersHandler<IClearable> 
     {
         private List<IClearable> _clearables = new List<IClearable>();
 

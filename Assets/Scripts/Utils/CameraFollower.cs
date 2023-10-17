@@ -7,10 +7,10 @@ namespace Utils
         private Transform _followTarget;
         private CameraModel _cameraModel;
 
-        public void Initialize(Transform followTarget, CameraModel cameraModel)
+        public void Initialize(CameraModel cameraModel, Transform target)
         {
-            _followTarget = followTarget;
             _cameraModel = cameraModel;
+            _followTarget = target;
         }
 
         private void FixedUpdate()

@@ -9,15 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15122fcd365d2fa4f8ddfdb2713b0a4d, type: 3}
-  m_Name: ObstacleSpawnerConfig
+  m_Script: {fileID: 11500000, guid: 362a30cde70d0b24ca7f305c45185a66, type: 3}
+  m_Name: Sounds Config
   m_EditorClassIdentifier: 
-  _spawnDelay: 0.6
-  MaxOffset: 1
-  MinOffset: 0
-  MaxDirection: 1
-  MinDirection: 0
-  _maxSpeed: 2.5
-  _minSpeed: 0.5
-  _autoExpand: 1
-  _count: 3
+  _turnSound: {fileID: 8300000, guid: 5cfb4d92910a49044955f59b283f355b, type: 3}

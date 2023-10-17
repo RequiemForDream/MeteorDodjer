@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public class Initializator : IListenersHandler<IInitializable>
+    public class SceneInitializator : IListenersHandler<IInitializable>
     {
         private List<IInitializable> _initializables = new List<IInitializable>();
 

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Camera Config
   m_EditorClassIdentifier: 
   CameraModel:
-    _offset: {x: 1, y: 1, z: -10}
+    _offset: {x: 0, y: 0, z: -10}
     _distance: 10

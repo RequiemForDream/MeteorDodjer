@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Utils
@@ -8,6 +9,16 @@ namespace Utils
         public static void Subscribe(Button button, UnityAction unityAction)
         {
             button.onClick.AddListener(unityAction);
+        }
+
+        public static void Activate(GameObject gameObject)
+        {
+            gameObject.SetActive(true);
+        }
+
+        public static void Deactivate(GameObject gameObject)
+        {
+            gameObject.SetActive(false);
         }
     }
 }

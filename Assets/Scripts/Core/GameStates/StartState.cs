@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace StateMachine
 {
-    public class InitializeUIState : State
+    public class StartState : State
     {
         private readonly MenuScreen _menuScreen;
         private readonly GameEndScreen _gameEndScreen;
         private readonly SettingsScreen _settingsScreen;
         private readonly Canvas _canvas;
 
-        public InitializeUIState(UIFactory uiFactory)
+        public StartState(UIFactory uiFactory)
         {
             _menuScreen = uiFactory.MenuScreen;   
             _gameEndScreen = uiFactory.GameEndScreen;
@@ -28,7 +28,7 @@ namespace StateMachine
 
         private void InitializeMenuScreen()
         {
-            _menuScreen.OnGameStartPressed += SetInitState;
+            //_menuScreen.OnGameStartPressed += SetGameplayState;
             _menuScreen.SetCanvas(_canvas);
             _menuScreen.Show();
         }
@@ -43,11 +43,6 @@ namespace StateMachine
         {
             _gameEndScreen.SetCanvas(_canvas);
             _gameEndScreen.Hide();
-        }
-
-        private void SetInitState()
-        {
-            StateMachine.ChangeState<InitializeState>();
         }
 
         public override void Exit()

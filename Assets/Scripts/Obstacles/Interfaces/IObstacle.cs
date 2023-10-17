@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Core;
+using Core.Interfaces;
+using UnityEngine;
 
 namespace Obstacles.Intefaces
 {
-    public interface IObstacle
+    public interface IObstacle : IFixedUpdateListener, IInitializable, IClearable
     {
         ObstacleView ObstacleView { get; set; }
         void SetDirection(Vector2 direction);

@@ -6,16 +6,18 @@ using UnityEngine.EventSystems;
 
 namespace Core
 {
-    public class InputService : IInputService, IUpdateListener
+    public class InputService : IInputService
     {
         public event Action OnScreenTap;
-
         private readonly Updater _updater;
+
         private List<RaycastResult> _uiRaycastBuffer = new List<RaycastResult>();   
 
-        public InputService(Updater updater)
+        public InputService(Updater updater, IListenersHandler<IInitializable> initializator, IListenersHandler<IClearable> clearer)
         {
             _updater = updater;
+            initializator.AddListener(this);
+            clearer.AddListener(this);
         }
 
         public void Initialize()

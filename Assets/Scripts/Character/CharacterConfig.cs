@@ -2,7 +2,7 @@
 
 namespace Character
 {
-    [CreateAssetMenu(fileName = "CharacterConfig", menuName = "Character / New Character Config")]
+    [CreateAssetMenu(fileName = "Character Config", menuName = "Character / New Character Config")]
     public class CharacterConfig : ScriptableObject
     {
         public CharacterView CharacterPrefab;

@@ -1,17 +1,20 @@
 ﻿using Core;
-using Core.Interfaces;
 using Obstacles.Intefaces;
+using System;
 using UnityEngine;
+using Utils;
 
 namespace Obstacles
 {
-    public class Obstacle : IFixedUpdateListener, IObstacle
+    public class Obstacle : IObstacle, ITest
     {
         public ObstacleView ObstacleView { get; set; }
         public ObstacleModel ObstacleModel { get; private set; }
 
         private readonly Updater _updater;
         private Vector2 Direction;
+
+        public event Action OnPerfectCollide;
 
         public Obstacle(ObstacleView obstacleView, ObstacleModel obstacleModel, Updater updater)
         {
@@ -20,14 +23,14 @@ namespace Obstacles
             _updater = updater;
 
             Initialize();
+            ObstacleView.OnDestroyHandler += Destroy;
+            ObstacleView.SetLifeTime(ObstacleModel.LifeTime);
+            ObstacleView.Initialize();
         }
 
-        private void Initialize()
-        {
-            ObstacleView.Initialize();
-            ObstacleView.OnDestroyHandler += Destroy;
+        public void Initialize()
+        {        
             _updater.AddFixedUpdateListener(this);
-            ObstacleView.SetLifeTime(ObstacleModel.LifeTime);
         }
 
         public void SetPosition(Vector2 position)
@@ -48,6 +51,13 @@ namespace Obstacles
         public void FixedTick(float fixedDeltaTime)
         {
             ObstacleView.Rigidbody2D.velocity = Direction;
+        }
+
+        public void Clear()
+        {
+            Extensions.Deactivate(ObstacleView.gameObject);
+           // _updater.RemoveFixedUpdateListener(this);
+            //ObstacleView.Destroy();
         }
 
         private void Destroy()

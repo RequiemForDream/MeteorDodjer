@@ -3,10 +3,11 @@ using Core;
 using Core.Interfaces;
 using System;
 using UnityEngine;
+using Utils;
 
 namespace Character
 {
-    public class MainCharacter : IFixedUpdateListener, ICharacter
+    public class MainCharacter : ICharacter
     {
         public event Action OnDied;
         public CharacterView CharacterView { get; private set; }
@@ -22,13 +23,9 @@ namespace Character
         public float MovementSpeed
         {
             get => CharacterModel.Speed;
-            set => CharacterModel.Speed = value;
         }
 
         private readonly Updater _updater;
-        private readonly IInputService _inputService;
-        private readonly IListenersHandler<IInitializable> _initializator;
-        private readonly IListenersHandler<IClearable> _clearer;
         private bool _isMovingRight;
 
         public MainCharacter(CharacterView characterView, CharacterModel characterModel, Updater updater, IInputService inputService,
@@ -37,19 +34,21 @@ namespace Character
             CharacterView = characterView;
             CharacterModel = characterModel;
             _updater = updater;
-            _inputService = inputService;
-            _clearer = clearer;
-            _initializator = initializator;
-            _initializator.AddListener(this);
+            initializator.AddListener(this);
+            clearer.AddListener(this);
+            Extensions.Deactivate(CharacterView.gameObject);
+            inputService.OnScreenTap += Turn;
+            CharacterView.Initialize();
+            CharacterView.OnDestroyHandler += OnDestroy;
+            CharacterView.ObstacleDetector.OnCollided += Die;
         }
 
         public void Initialize()
         {
-            CharacterView.Initialize();
+            Extensions.Activate(CharacterView.gameObject);
+            
             _updater.AddFixedUpdateListener(this);
-            CharacterView.OnDestroyHandler += OnDestroy;
-            CharacterView.ObstacleDetector.OnCollided += Die;
-            _inputService.OnScreenTap += Turn;
+            
         }
 
         public void FixedTick(float deltaTime)
@@ -71,15 +70,15 @@ namespace Character
 
         private void Die()
         {
-            Debug.Log("daas");
             OnDied?.Invoke();
         }
 
         public void Clear()
         {
-            CharacterView.Destroy();
-            _clearer.RemoveListener(this);
-            _initializator.RemoveListener(this);
+            Extensions.Deactivate(CharacterView.gameObject);
+            CharacterView.transform.position = CharacterModel.StartPosition;
+            _updater.RemoveFixedUpdateListener(this);
+            CharacterView.TrailRenderer.Clear();
         }
 
         private void OnDestroy()

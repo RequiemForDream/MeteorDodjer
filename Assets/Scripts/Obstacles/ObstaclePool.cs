@@ -10,21 +10,20 @@ namespace Obstacles
         private readonly IFactory<IObstacle> _obstacleFactory;
         private readonly int _poolCount;
         private readonly bool _autoExpand;
-        private GameObject _parent = new GameObject("Obstacle Pool");
+        private readonly GameObject _container;
+        private List<IObstacle> _pool;
 
-        private List<IObstacle> _pool = new List<IObstacle>();
-
-        public ObstaclePool(bool autoExpand, int poolCount, IFactory<IObstacle> obstacleFactory)
+        public ObstaclePool(bool autoExpand, int poolCount, IFactory<IObstacle> obstacleFactory, GameObject container)
         {
             _autoExpand = autoExpand;
             _poolCount = poolCount;
             _obstacleFactory = obstacleFactory;
-
-            CreatePool();
+            _container = container;
         }
 
-        private void CreatePool()
+        public void CreatePool()
         {
+            _pool = new List<IObstacle>();
             for (int i = 0; i < _poolCount; i++)
             {
                 SpawnObstacle();
@@ -35,7 +34,7 @@ namespace Obstacles
         {
             var obstacle = _obstacleFactory.Create();
             obstacle.ObstacleView.gameObject.SetActive(isActiveByDefault);
-            obstacle.SetParent(_parent.transform);
+            obstacle.SetParent(_container.transform);
             _pool.Add(obstacle);
             return obstacle;
         }
@@ -75,7 +74,7 @@ namespace Obstacles
         {
             foreach (var obstacle in _pool)
             {
-                obstacle.ObstacleView.Destroy();
+                obstacle.Clear();
             }
         }
     }
