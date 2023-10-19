@@ -3,11 +3,13 @@ using Character.Interfaces;
 using Core.Interfaces;
 using Factories;
 using Factories.Interfaces;
+using Factories.UI;
 using Obstacles;
 using Obstacles.Intefaces;
 using Sounds;
-using System.Linq.Expressions;
+using Sounds.Interfaces;
 using UI;
+using UI.Interfaces;
 using UnityEngine;
 using Utils;
 
@@ -31,13 +33,21 @@ namespace Core
         {
             BindInitializator(out SceneInitializator initializator);
             BindClearer(out SceneClearer clearer);
-            BindUIFactory(out UIFactory uiFactory);
+            BindMultiplierCounter(out MultiplierCounter multiplierCounter);
+            BindScoreCounter(out ScoreCounter scoreCounter, multiplierCounter);
+            BindGameplayScreen(out GameplayScreen gameplayScreen, multiplierCounter, initializator, clearer, scoreCounter,
+                _uiConfig.MultiplierTime);
+            BindMenuScreen(out MenuScreen menuScreen);
+            BindGameEndScreen(out GameEndScreen gameEndScreen);
+            BindSettingsScreen(out SettingsScreen settingsScreen);
+            BindCanvas(out Canvas canvas);
+            BindUIContainer(out UIContainer uiFactory, menuScreen, gameEndScreen, gameplayScreen, canvas, settingsScreen);
+            BindSoundFactory(out ISoundFactory soundFactory);
             BindInputService(out InputService inputService, initializator, clearer);
-            BindObstacleFactory(out IFactory<IObstacle> obstacleFactory);
-            BindCharacterFactory(out ICharacter character, inputService, initializator,clearer);
+            BindObstacleFactory(out IFactory<IObstacle> obstacleFactory, soundFactory, multiplierCounter);
+            BindCharacterFactory(out ICharacter character, inputService, soundFactory, initializator, clearer, scoreCounter);
             BindObstacleSpawner(out IObstacleSpawner obstacleSpawner, obstacleFactory, initializator, clearer, character);
             BindCameraFollower(character);
-            BindSoundFactory(out SoundFactory soundFactory, inputService);
             BindLevel(out Level level, initializator, clearer, uiFactory, character);
 
             level.Start();
@@ -48,14 +58,25 @@ namespace Core
             initializator = new SceneInitializator();
         }
 
+        private void BindMultiplierCounter(out MultiplierCounter multiplierCounter)
+        {
+            multiplierCounter = new MultiplierCounter();
+        }
+
+        private void BindScoreCounter(out ScoreCounter scoreCounter, MultiplierCounter multiplierCounter)
+        {
+            scoreCounter = new ScoreCounter(multiplierCounter);
+        }
+
         private void BindClearer(out SceneClearer clearer)
         {
             clearer = new SceneClearer();
         }
 
-        private void BindUIFactory(out UIFactory uiFactory)
+        private void BindUIContainer(out UIContainer uiContainer, MenuScreen menuScreen, GameEndScreen gameEndScreen,
+            GameplayScreen gameplayScreen, Canvas canvas, SettingsScreen settingsScreen)
         {
-            uiFactory = new UIFactory(_uiConfig);
+            uiContainer = new UIContainer(menuScreen, gameplayScreen, gameEndScreen, settingsScreen, canvas);
         }
 
         private void BindInputService(out InputService inputService, SceneInitializator initializator, SceneClearer clearer)
@@ -63,16 +84,17 @@ namespace Core
             inputService = new InputService(_updater, initializator, clearer);
         }
 
-        private void BindObstacleFactory(out IFactory<IObstacle> obstacleFactory)
+        private void BindObstacleFactory(out IFactory<IObstacle> obstacleFactory, ISoundFactory soundFactory,
+            ICounter<int> multiplierCounter)
         {
-            obstacleFactory = new ObstacleFactory(_updater, _obstacleConfig);
+            obstacleFactory = new ObstacleFactory(_updater, _obstacleConfig, soundFactory, multiplierCounter);
         }
 
-        private void BindCharacterFactory(out ICharacter character, IInputService inputService,
-            SceneInitializator initializator, SceneClearer clearer)
+        private void BindCharacterFactory(out ICharacter character, IInputService inputService, ISoundFactory soundFactory,
+            SceneInitializator initializator, SceneClearer clearer, ICounter<float> scoreCounter)
         {
             IFactory<ICharacter> characterFactory = new MainCharacterFactory(_characterConfig, _updater, inputService, initializator,
-                clearer);
+                clearer, soundFactory, scoreCounter);
             character = characterFactory.Create();
         }
 
@@ -85,18 +107,50 @@ namespace Core
 
         private void BindCameraFollower(ICharacter character)
         {
-            _cameraFollower.Initialize(_cameraConfig.CameraModel, character.Transform);
+            _cameraFollower.Construct(_cameraConfig.CameraModel, character.Transform);
         }
 
-        private void BindLevel(out Level level, SceneInitializator initializator, SceneClearer clearer, UIFactory uiFactory,
+        private void BindLevel(out Level level, SceneInitializator initializator, SceneClearer clearer, UIContainer uiFactory,
             ICharacter character)
         {
             level = new Level(uiFactory, initializator, clearer, character);
         }
 
-        private void BindSoundFactory(out SoundFactory soundFactory, IInputService inputService)
+        private void BindSoundFactory(out ISoundFactory soundFactory)
         {
-            soundFactory = new SoundFactory(inputService, _soundConfig, _audioSource);
+            soundFactory = new SoundFactory( _soundConfig, _audioSource);
+        }
+
+        private void BindGameplayScreen(out GameplayScreen gameplayScreen, MultiplierCounter multiplierCounter,
+            SceneInitializator sceneInitializator, SceneClearer sceneClearer, ScoreCounter scoreCounter, float multiplierTime)
+        {
+            IFactory<GameplayScreen> gameplayScreenFactory = new GameplayScreenFactory(_uiConfig.GamePlayScreen, multiplierCounter,
+                sceneInitializator, sceneClearer, scoreCounter, multiplierTime);
+            gameplayScreen = gameplayScreenFactory.Create();
+        }
+
+        private void BindMenuScreen(out MenuScreen menuScreen)
+        {
+            IFactory<MenuScreen> menuFactory = new MenuScreenFactory(_uiConfig.MenuScreen);
+            menuScreen = menuFactory.Create();
+        }
+
+        private void BindGameEndScreen(out GameEndScreen gameEndScreen)
+        {
+            IFactory<GameEndScreen> gameEndScreenFactory = new EndScreenFactory(_uiConfig.GameEndScreen);
+            gameEndScreen = gameEndScreenFactory.Create();
+        }
+
+        private void BindSettingsScreen(out SettingsScreen settingsScreen)
+        {
+            IFactory<SettingsScreen> settingsScreenFactory = new SettingsScreenFactory(_uiConfig.SettingScreen);
+            settingsScreen = settingsScreenFactory.Create();
+        }
+
+        private void BindCanvas(out Canvas canvas)
+        {
+            IFactory<Canvas> canvasFactory = new CanvasFactory(_uiConfig.Canvas, _cameraFollower.GetComponent<Camera>());
+            canvas = canvasFactory.Create();
         }
     }
 }

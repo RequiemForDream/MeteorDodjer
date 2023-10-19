@@ -6,7 +6,9 @@ namespace Sounds
     public class SoundsConfig : ScriptableObject
     {
         [SerializeField] private AudioClip _turnSound;
+        [SerializeField] private AudioClip _perfectCollideSound;
         
         public AudioClip TurnSound => _turnSound;
+        public AudioClip PerfectCollideSound => _perfectCollideSound;
     }
 }

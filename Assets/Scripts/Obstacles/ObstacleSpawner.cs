@@ -13,6 +13,7 @@ namespace Obstacles
         private readonly ObstacleSpawnerConfig _obstacleSpawnerConfig;
         private readonly IFactory<IObstacle> _obstacleFactory;
         private readonly ICharacter _character;
+        private GameObject _container = new GameObject("Obstacle Pool");
         private IObstaclePool _obstaclePool;
 
         private float _currentTime;
@@ -25,11 +26,9 @@ namespace Obstacles
             _obstacleFactory = obstacleFactory;
             _character = character;
             initializator.AddListener(this);
-            clearer.AddListener(this);
-            GameObject container = new GameObject("Obstacle Pool");
-            Debug.Log("Pool created");
+            clearer.AddListener(this);           
             _obstaclePool = new ObstaclePool(_obstacleSpawnerConfig.AutoExpand, _obstacleSpawnerConfig.Count, _obstacleFactory,
-                container);
+                _container);
             _obstaclePool.CreatePool();
         }
 

@@ -1,31 +1,32 @@
 ﻿using Character;
-using Character.Interfaces;
+using Obstacles.Intefaces;
 using System;
 using UnityEngine;
 
 namespace Obstacles
 {
-    public class PerfectCollideDetector : MonoBehaviour, IDetector
+    public class PerfectCollideDetector : MonoBehaviour, IPerfectCollideDetector
     {
-        public float PerfectCollideTime;
-        public float currentTime;
-        public event Action OnCollided;
+        public event Action OnPerfectCollideDetect;
+        private ObstacleModel _obstacleModel;
         private LineRenderer _colliderRenderer;
 
-        private void Awake()
-        {
-            currentTime = PerfectCollideTime;
-            _colliderRenderer = GetComponent<LineRenderer>();
+        private float currentTime;
 
-            Initialize();
+        public void SetObstacleModel(ObstacleModel obstacleModel)
+        {
+            _obstacleModel = obstacleModel;
+            _colliderRenderer = GetComponent<LineRenderer>();
+            currentTime = _obstacleModel.PerfectCollideTime;
+            SetLineRendererParameters();
         }
 
-        private void Initialize()
+        private void SetLineRendererParameters()
         {
             _colliderRenderer.positionCount = 5;
 
             Vector3[] cubeVertices = new Vector3[5];
-            float halfSize = 0.6f;
+            float halfSize = _obstacleModel.PerfectCollideSize;
 
             cubeVertices[0] = new Vector3(-halfSize * 1.5f, -halfSize, 0f);
             cubeVertices[1] = new Vector3(halfSize, -halfSize, 0f);
@@ -45,9 +46,9 @@ namespace Obstacles
                 currentTime -= Time.deltaTime;
                 if (currentTime <= 0)
                 {
-                    OnCollided?.Invoke();
+                    OnPerfectCollideDetect?.Invoke();
                     Debug.Log("Collided");
-                    currentTime = PerfectCollideTime;
+                    currentTime = _obstacleModel.PerfectCollideTime;
                     return;
                 }
             }
@@ -57,7 +58,7 @@ namespace Obstacles
         {
             if (collision.TryGetComponent(out ObstacleDetector characterDetector))
             {
-                currentTime = PerfectCollideTime;
+                currentTime = _obstacleModel.PerfectCollideTime;
             }
         }
     }

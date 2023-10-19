@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ObstaclePrefab: {fileID: 1460877459648175247, guid: b7a1e96b5403e094b8365d08f512277e, type: 3}
   ObstacleModel:
-    LifeTime: 4
+    _lifeTime: 4
+    _perfectCollideTime: 0.25
+    _perfectCollideSize: 0.6
+    _perfectCollideSound: {fileID: 8300000, guid: eda45f822800c804599ab4015cae047b, type: 3}

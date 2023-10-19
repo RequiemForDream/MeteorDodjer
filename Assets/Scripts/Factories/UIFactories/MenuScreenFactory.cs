@@ -1,6 +1,7 @@
 ﻿using Factories.Interfaces;
 using UI;
 using Object = UnityEngine.Object;
+
 namespace Factories.UI
 {
     public class MenuScreenFactory : IFactory<MenuScreen>

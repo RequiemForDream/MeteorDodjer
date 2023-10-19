@@ -1,23 +1,20 @@
-﻿using Core.Interfaces;
+﻿using Sounds.Interfaces;
 using UnityEngine;
 
 namespace Sounds
 {
-    public class SoundFactory
+    public class SoundFactory : ISoundFactory
     {
-        private readonly AudioClip _turnSound;
         private readonly AudioSource _soundSource;
 
-        public SoundFactory(IInputService inputService, SoundsConfig soundsConfig, AudioSource soundSource)
+        public SoundFactory(SoundsConfig soundsConfig, AudioSource soundSource)
         {
-            inputService.OnScreenTap += PlayTrunSound;
-            _turnSound = soundsConfig.TurnSound;
             _soundSource = soundSource;
         }
 
-        private void PlayTrunSound()
+        public void PlaySound(AudioClip clip)
         {
-            _soundSource.PlayOneShot(_turnSound);
+           _soundSource.PlayOneShot(clip);
         }
     }
 }

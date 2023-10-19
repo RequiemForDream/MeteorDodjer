@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5181bf630169fa44b11726e5e732a91, type: 3}
   m_Name: UI Config
   m_EditorClassIdentifier: 
+  _multiplierTime: 3
   _canvas: {fileID: 4062537586747447303, guid: 58ed6283538281c4687d39a987cec2f1, type: 3}
   _menuScreen: {fileID: 8540505952832102257, guid: 265aa49e74b0e2146b84c039fd165eeb, type: 3}
   _gameEndScreen: {fileID: -5419678043308573849, guid: 19447ba8c5742fb48b354fddc4e0d591, type: 3}
   _settingsScreen: {fileID: 264147258913326780, guid: 13799dcf8e609c640bd594149bd33940, type: 3}
+  _gameplayScreen: {fileID: -5056705958467482143, guid: 905179adf9a96ac4d95cf08468548bb2, type: 3}

@@ -5,22 +5,20 @@ namespace Core
 {
     public class Level
     {
-        private readonly UIFactory _uiFactory;
+        private readonly UIContainer _uiContainer;
         private readonly SceneInitializator _initializator;
         private readonly SceneClearer _clearer;
         private readonly ICharacter _character;
 
         private GameStateMachine _gameStateMachine;
 
-        public Level(UIFactory uiFactory,
+        public Level(UIContainer uiContainer,
             SceneInitializator initializator, SceneClearer clearer, ICharacter character)
         {          
-            _uiFactory = uiFactory;
+            _uiContainer = uiContainer;
             _initializator = initializator;
             _clearer = clearer;
             _character = character;
-
-
         }
 
         public void Start()
@@ -32,9 +30,9 @@ namespace Core
 
         private void InitializeStates()
         {
-            GameplayState initializeState = new GameplayState(_initializator, _clearer);
-            GameEndState gameEndState = new GameEndState(_uiFactory.GameEndScreen);
-            StartState initializeUIState = new StartState(_uiFactory);
+            GameplayState initializeState = new GameplayState(_initializator, _clearer, _uiContainer.GameplayScreen);
+            GameEndState gameEndState = new GameEndState(_uiContainer.GameEndScreen);
+            StartState initializeUIState = new StartState(_uiContainer);
 
             _gameStateMachine.AddState<GameplayState>(initializeState);
             _gameStateMachine.AddState<GameEndState>(gameEndState);
@@ -45,8 +43,8 @@ namespace Core
 
         private void SubscribeStates()
         {
-            _uiFactory.MenuScreen.OnGameStartPressed += SetGameplayState;
-            _uiFactory.GameEndScreen.OnRestartButtonPressed += SetGameplayState;
+            _uiContainer.MenuScreen.OnGameStartPressed += SetGameplayState;
+            _uiContainer.GameEndScreen.OnRestartButtonPressed += SetGameplayState;
             _character.OnDied += SetEndGameState;
         }
 

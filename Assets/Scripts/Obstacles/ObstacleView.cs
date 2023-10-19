@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Obstacles.Intefaces;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -12,11 +13,14 @@ namespace Obstacles
         public event Action OnDestroyHandler;
         private float _lifeTime;
 
-        public Rigidbody2D Rigidbody2D { get; private set; } 
+        public Rigidbody2D Rigidbody2D { get; private set; }
+        public IPerfectCollideDetector PerfectCollideDetector { get; private set; }
 
-        public void Initialize()
+        public void Initialize(ObstacleModel obstacleModel)
         {
             Rigidbody2D = GetComponent<Rigidbody2D>();
+            PerfectCollideDetector = GetComponentInChildren<IPerfectCollideDetector>();
+            PerfectCollideDetector.SetObstacleModel(obstacleModel);
         }
 
         public void SetLifeTime(float lifeTime)

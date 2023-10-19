@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Obstacles.Intefaces
 {
-    public interface IObstacle : IFixedUpdateListener, IInitializable, IClearable
+    public interface IObstacle : IFixedUpdateListener, IClearable
     {
         ObstacleView ObstacleView { get; set; }
         void SetDirection(Vector2 direction);

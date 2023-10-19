@@ -7,7 +7,7 @@ namespace Utils
         private Transform _followTarget;
         private CameraModel _cameraModel;
 
-        public void Initialize(CameraModel cameraModel, Transform target)
+        public void Construct(CameraModel cameraModel, Transform target)
         {
             _cameraModel = cameraModel;
             _followTarget = target;

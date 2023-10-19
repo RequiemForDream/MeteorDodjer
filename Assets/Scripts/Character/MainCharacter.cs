@@ -1,7 +1,10 @@
 ﻿using Character.Interfaces;
 using Core;
 using Core.Interfaces;
+using Sounds.Interfaces;
 using System;
+using UI;
+using UI.Interfaces;
 using UnityEngine;
 using Utils;
 
@@ -26,33 +29,44 @@ namespace Character
         }
 
         private readonly Updater _updater;
+        private readonly ISoundFactory _soundFactory;
+        private readonly ICounter<float> _scoreCounter;
         private bool _isMovingRight;
 
         public MainCharacter(CharacterView characterView, CharacterModel characterModel, Updater updater, IInputService inputService,
-            IListenersHandler<IInitializable> initializator, IListenersHandler<IClearable> clearer)
+            IListenersHandler<IInitializable> initializator, IListenersHandler<IClearable> clearer, ISoundFactory soundFactory,
+            ICounter<float> scoreCounter)
         {
             CharacterView = characterView;
             CharacterModel = characterModel;
             _updater = updater;
+            _soundFactory = soundFactory;
+            _scoreCounter = scoreCounter;
+
+            OnCharacterCreated(inputService, initializator, clearer);
+        }
+
+        private void OnCharacterCreated(IInputService inputService, IListenersHandler<IInitializable> initializator, 
+            IListenersHandler<IClearable> clearer)
+        {
             initializator.AddListener(this);
             clearer.AddListener(this);
-            Extensions.Deactivate(CharacterView.gameObject);
             inputService.OnScreenTap += Turn;
             CharacterView.Initialize();
             CharacterView.OnDestroyHandler += OnDestroy;
             CharacterView.ObstacleDetector.OnCollided += Die;
+            Extensions.Deactivate(CharacterView.gameObject);
         }
 
         public void Initialize()
         {
             Extensions.Activate(CharacterView.gameObject);
-            
             _updater.AddFixedUpdateListener(this);
-            
         }
 
         public void FixedTick(float deltaTime)
         {
+            _scoreCounter.AddValue(CharacterModel.ScoreToAdd);
             if (_isMovingRight)
             {
                 CharacterView.Rigidbody2D.velocity = new Vector2(CharacterModel.Speed, 0f);
@@ -66,6 +80,7 @@ namespace Character
         private void Turn()
         {
             _isMovingRight = !_isMovingRight;
+            _soundFactory.PlaySound(CharacterModel.TurnSound);
         }
 
         private void Die()

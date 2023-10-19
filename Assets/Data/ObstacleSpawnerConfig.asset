@@ -17,7 +17,7 @@ MonoBehaviour:
   MinOffset: 0
   MaxDirection: 1
   MinDirection: 0
-  _maxSpeed: 2.5
+  _maxSpeed: 2
   _minSpeed: 0.5
   _autoExpand: 1
   _count: 3
