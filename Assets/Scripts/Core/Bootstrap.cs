@@ -1,6 +1,7 @@
 using Character;
 using Character.Interfaces;
 using Core.Interfaces;
+using Core.Save;
 using Factories;
 using Factories.Interfaces;
 using Factories.UI;
@@ -19,6 +20,7 @@ namespace Core
     {
         [SerializeField] private Updater _updater;
         [SerializeField] private CameraFollower _cameraFollower;
+        [SerializeField] private BackgroundFollower _backgroundFollower;
         [SerializeField] private AudioSource _audioSource;
 
         [Header("Configurations")]
@@ -28,6 +30,7 @@ namespace Core
         [SerializeField] private CameraConfig _cameraConfig;
         [SerializeField] private UIConfig _uiConfig;
         [SerializeField] private SoundsConfig _soundConfig;
+        [SerializeField] private BackgroundConfig _backgroundConfig;
 
         private void Awake()
         {
@@ -48,6 +51,7 @@ namespace Core
             BindCharacterFactory(out ICharacter character, inputService, soundFactory, initializator, clearer, scoreCounter);
             BindObstacleSpawner(out IObstacleSpawner obstacleSpawner, obstacleFactory, initializator, clearer, character);
             BindCameraFollower(character);
+            BindBackgroundFollower(character, initializator, clearer);
             BindLevel(out Level level, initializator, clearer, uiFactory, character);
 
             level.Start();
@@ -108,6 +112,13 @@ namespace Core
         private void BindCameraFollower(ICharacter character)
         {
             _cameraFollower.Construct(_cameraConfig.CameraModel, character.Transform);
+        }
+
+        private void BindBackgroundFollower(ICharacter character, IListenersHandler<IInitializable> initializer,
+            IListenersHandler<IClearable> clearer)
+        {
+            _backgroundFollower.Construct(_backgroundConfig.CameraModel, character.Transform);
+            _backgroundFollower.Config(_backgroundConfig, initializer, clearer);
         }
 
         private void BindLevel(out Level level, SceneInitializator initializator, SceneClearer clearer, UIContainer uiFactory,

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Utils
 {
     [Serializable]
-    public class CameraModel
+    public class FollowModel
     {
         [SerializeField] private Vector3 _offset;
         [SerializeField] private float _distance;

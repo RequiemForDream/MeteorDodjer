@@ -18,10 +18,11 @@ namespace Obstacles
             _obstacleModel = obstacleModel;
             _colliderRenderer = GetComponent<LineRenderer>();
             currentTime = _obstacleModel.PerfectCollideTime;
-            SetLineRendererParameters();
+            RenderCircle();
+            //RenderLine();
         }
 
-        private void SetLineRendererParameters()
+        private void RenderLine()
         {
             _colliderRenderer.positionCount = 5;
 
@@ -37,6 +38,24 @@ namespace Obstacles
             _colliderRenderer.SetPositions(cubeVertices);
             _colliderRenderer.startWidth = halfSize;
             _colliderRenderer.endWidth = halfSize;
+        }
+
+        private void RenderCircle()
+        {
+            int numPoints = 36; 
+            float radius = 0.5f;
+
+            _colliderRenderer.positionCount = numPoints;
+
+            float angle = 0f;
+            for (int i = 0; i < numPoints; i++)
+            {
+                float x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+                float y = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+                Vector3 pos = new Vector3(x, y, 0f);
+                _colliderRenderer.SetPosition(i, pos);
+                angle += 360f / numPoints;
+            }
         }
 
         private void OnTriggerStay2D(Collider2D collision)

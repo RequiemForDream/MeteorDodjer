@@ -6,9 +6,7 @@ namespace UI
     public class ScoreCounter : ICounter<float>
     {
         public event Action<float> OnScoreValueChanged;
-        private bool _isMultiplierActive;
-        private float _scoreCount;
-        private float _bonusScoreCount;
+        public float _scoreCount;
         private readonly MultiplierCounter _multiplierCounter;
 
         public ScoreCounter(MultiplierCounter multiplierCounter)
@@ -18,12 +16,6 @@ namespace UI
         
         public void AddValue(float value)
         {
-            if (_isMultiplierActive)
-            {
-                _bonusScoreCount += value;
-                return;
-            }
-
             _scoreCount += value;
             OnScoreValueChanged?.Invoke(value);
         }

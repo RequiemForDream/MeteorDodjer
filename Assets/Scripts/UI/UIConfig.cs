@@ -14,7 +14,6 @@ namespace UI
         [SerializeField] private SettingsScreen _settingsScreen;
         [SerializeField] private GameplayScreen _gameplayScreen;
         
-
         public Canvas Canvas => _canvas;
         public MenuScreen MenuScreen => _menuScreen;
         public GameEndScreen GameEndScreen => _gameEndScreen;

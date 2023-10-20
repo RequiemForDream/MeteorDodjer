@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Core.Save;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,9 +26,9 @@ namespace UI
 
         public void Construct(MultiplierCounter multiplierCounter, ScoreCounter scoreCounter, float multiplierTime)
         {
+            _scoreCounter = scoreCounter;
             _multiplierTime = multiplierTime;
             _multiplierCounter = multiplierCounter;
-            _scoreCounter = scoreCounter;
         }
 
         private void Update()
@@ -90,11 +91,13 @@ namespace UI
 
         public void Clear()
         {
+            PlayerData playerData = new PlayerData(_score);
+            SaveSystem.SavePlayer(playerData);
+            _score = 0f;
             foreach (var text in _textArray)
             {
                 text.text = null;
             }
-            _score = 0f;
             _timerImage.fillAmount = 1f;
             _multiplierCounter.ResetValue();
             _isMultiplierActive = false;

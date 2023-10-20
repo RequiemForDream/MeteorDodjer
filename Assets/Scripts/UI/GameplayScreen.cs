@@ -1,6 +1,6 @@
 ﻿using Core;
 using Core.Interfaces;
-using System.Collections;
+using Core.Save;
 using TMPro;
 using UnityEngine;
 
@@ -9,10 +9,9 @@ namespace UI
     public class GameplayScreen : GameScreen, IClearable, IInitializable
     {
         [SerializeField] private MultiplierTimer _timer;
-        [SerializeField] private TMP_Text _scoreCount;
+        [SerializeField] private TMP_Text _highScore;
 
         private ScoreCounter _scoreCounter;
-        private Coroutine _coroutine;
 
         protected override void OnAwake() { }
 
@@ -29,6 +28,9 @@ namespace UI
         public void Initialize()
         {
             _timer.gameObject.SetActive(false);
+            //var data = SaveSystem.LoadPlayerData();
+            //int highScore = Mathf.FloorToInt(data.HighScore);
+            //_highScore.text = highScore.ToString();
         }
 
         private void UpdateMultiplierValue(int value)
