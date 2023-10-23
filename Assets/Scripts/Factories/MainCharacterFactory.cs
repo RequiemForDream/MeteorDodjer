@@ -3,7 +3,6 @@ using Core;
 using Core.Interfaces;
 using Factories.Interfaces;
 using Sounds.Interfaces;
-using UI;
 using UI.Interfaces;
 using Object = UnityEngine.Object;
 

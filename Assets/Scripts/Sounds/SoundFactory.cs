@@ -7,7 +7,7 @@ namespace Sounds
     {
         private readonly AudioSource _soundSource;
 
-        public SoundFactory(SoundsConfig soundsConfig, AudioSource soundSource)
+        public SoundFactory(AudioSource soundSource)
         {
             _soundSource = soundSource;
         }

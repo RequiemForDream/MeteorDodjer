@@ -8,7 +8,6 @@ namespace StateMachine
     {
         private readonly MenuScreen _menuScreen;
         private readonly GameEndScreen _gameEndScreen;
-        private readonly SettingsScreen _settingsScreen;
         private readonly Canvas _canvas;
         private readonly GameplayScreen _gameplayScreen;
 
@@ -16,7 +15,6 @@ namespace StateMachine
         {
             _menuScreen = uiContainer.MenuScreen;   
             _gameEndScreen = uiContainer.GameEndScreen;
-            _settingsScreen = uiContainer.SettingsScreen;
             _canvas = uiContainer.Canvas;
             _gameplayScreen = uiContainer.GameplayScreen;
         }
@@ -24,7 +22,6 @@ namespace StateMachine
         public override void Enter()
         {
             InitializeMenuScreen();
-            InitializeSettingsScreen();
             InitializeGameEndScreen();
             InitializeGameplayScreen();
         }
@@ -33,12 +30,6 @@ namespace StateMachine
         {
             _menuScreen.SetCanvas(_canvas);
             _menuScreen.Show();
-        }
-
-        private void InitializeSettingsScreen()
-        {
-            _settingsScreen.SetCanvas(_canvas);
-            _settingsScreen.Hide();
         }
 
         private void InitializeGameEndScreen()
@@ -56,7 +47,6 @@ namespace StateMachine
         public override void Exit()
         {
             _menuScreen.Hide();
-            _settingsScreen.Hide();
             _gameEndScreen.Hide();
         }
     }

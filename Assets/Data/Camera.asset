@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2291b442cca9f94448419485b699718b, type: 3}
   m_Name: Camera
   m_EditorClassIdentifier: 
-  CameraModel:
+  FollowModel:
     _offset: {x: 0, y: 0, z: -10}
     _distance: 10

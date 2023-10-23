@@ -11,7 +11,6 @@ namespace Core.Save
             string filePath = Application.persistentDataPath + "/playerData.fun";
             BinaryFormatter formatter = new BinaryFormatter();
 
-            // Переменная для хранения предыдущих данных игрока
             PlayerData savedPlayerData = null;
 
             if (File.Exists(filePath))
@@ -22,7 +21,6 @@ namespace Core.Save
                 }
             }
 
-            // Проверяем, улучшился ли счет игрока
             if (savedPlayerData == null || playerData.HighScore > savedPlayerData.HighScore)
             {
                 using (FileStream newFileStream = new FileStream(filePath, FileMode.Create))
@@ -47,7 +45,6 @@ namespace Core.Save
             }
             else
             {
-                Debug.LogWarning("Файл данных игрока не найден.");
                 return null;
             }
         }

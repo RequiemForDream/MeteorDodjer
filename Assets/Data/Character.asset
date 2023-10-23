@@ -18,3 +18,4 @@ MonoBehaviour:
     _startPosition: {x: 0, y: 0}
     _turnSound: {fileID: 8300000, guid: 5cfb4d92910a49044955f59b283f355b, type: 3}
     _scoreToAdd: 0.2
+    _volumeForATurn: 0.2

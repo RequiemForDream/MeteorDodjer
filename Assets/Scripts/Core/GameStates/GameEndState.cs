@@ -14,6 +14,7 @@ namespace StateMachine
         public override void Enter()
         {
             _gameEndScreen.Show();
+            _gameEndScreen.ShowFinalScore(); 
             _gameEndScreen.OnRestartButtonPressed += SetGameEndState;
         }
 

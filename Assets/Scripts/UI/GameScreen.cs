@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UI
 {
-    public abstract class GameScreen : MonoBehaviour, IScreen
+    public abstract class GameScreen : MonoBehaviour
     {
         private void Awake()
         {

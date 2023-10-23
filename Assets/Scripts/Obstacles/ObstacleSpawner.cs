@@ -61,7 +61,6 @@ namespace Obstacles
             _currentTime = 0f;
             _obstaclePool.Clear();
             _updater.RemoveUpdateListener(this);
-            //_obstaclePool = null;
         }
 
         private Vector2 CalculatePosition(bool isMovingRight, out Vector2 direction)

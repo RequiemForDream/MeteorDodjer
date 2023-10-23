@@ -1,5 +1,4 @@
-﻿using Core;
-using Core.Interfaces;
+﻿using Core.Interfaces;
 
 namespace Obstacles.Intefaces
 {

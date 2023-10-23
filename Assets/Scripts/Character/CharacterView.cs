@@ -10,6 +10,7 @@ namespace Character
     public class CharacterView : MonoBehaviour, IDestroyable
     {
         public event Action OnDestroyHandler;
+        public GameObject CharacterModel;
         public Rigidbody2D Rigidbody2D { get; private set; }
         public TrailRenderer TrailRenderer { get; private set; } 
         public IDetector ObstacleDetector { get; private set; }

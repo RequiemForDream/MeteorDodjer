@@ -69,7 +69,7 @@ namespace Obstacles
         private void PerfectCollideDetected()
         {
             OnPerfectCollided?.Invoke();
-            _multiplierCounter.AddValue(1);
+            _multiplierCounter.AddValue(ObstacleModel.MultiplierPointsToAdd);
             _soundFactory.PlaySound(ObstacleModel.PerfectCollideSound);
         }
 

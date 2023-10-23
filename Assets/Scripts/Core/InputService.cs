@@ -53,9 +53,7 @@ namespace Core
 
         private bool HasTouched()
         {
-#if UNITY_EDITOR
             return Input.GetMouseButtonDown(0);
-#endif
         }
     }
 }

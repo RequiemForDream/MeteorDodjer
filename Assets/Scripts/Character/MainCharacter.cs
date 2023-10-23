@@ -3,7 +3,6 @@ using Core;
 using Core.Interfaces;
 using Sounds.Interfaces;
 using System;
-using UI;
 using UI.Interfaces;
 using UnityEngine;
 using Utils;
@@ -70,9 +69,11 @@ namespace Character
             if (_isMovingRight)
             {
                 CharacterView.Rigidbody2D.velocity = new Vector2(CharacterModel.Speed, 0f);
+                CharacterView.CharacterModel.transform.eulerAngles = new Vector3(0f, 0f, -90f);
             }
             else
             {
+                CharacterView.CharacterModel.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
                 CharacterView.Rigidbody2D.velocity = new Vector2(0f, CharacterModel.Speed);
             }
         }

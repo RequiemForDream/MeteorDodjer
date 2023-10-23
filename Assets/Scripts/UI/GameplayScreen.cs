@@ -1,5 +1,4 @@
-﻿using Core;
-using Core.Interfaces;
+﻿using Core.Interfaces;
 using Core.Save;
 using TMPro;
 using UnityEngine;
@@ -8,45 +7,48 @@ namespace UI
 {
     public class GameplayScreen : GameScreen, IClearable, IInitializable
     {
-        [SerializeField] private MultiplierTimer _timer;
-        [SerializeField] private TMP_Text _highScore;
-
-        private ScoreCounter _scoreCounter;
+        [SerializeField] private ScoreDisplay _scoreDisplay;
+        [SerializeField] private TMP_Text _highScoreDisplay;
 
         protected override void OnAwake() { }
 
         public void Construct(MultiplierCounter multiplierCounter, IListenersHandler<IInitializable> initializator,
-            IListenersHandler<IClearable> clearer, ScoreCounter scoreCounter, float multiplierTime)
+            IListenersHandler<IClearable> clearer, ScoreCounter scoreCounter, GameplayScreenModel gameplayScreenModel)
         {
             multiplierCounter.OnMultiplierValueChanged += UpdateMultiplierValue;
             scoreCounter.OnScoreValueChanged += UpdatePointsValue;
-            _timer.Construct(multiplierCounter, scoreCounter, multiplierTime);
+            _scoreDisplay.Construct(multiplierCounter, gameplayScreenModel.MultiplierTimer, scoreCounter);
             initializator.AddListener(this);
             clearer.AddListener(this);
         }
 
         public void Initialize()
         {
-            _timer.gameObject.SetActive(false);
-            //var data = SaveSystem.LoadPlayerData();
-            //int highScore = Mathf.FloorToInt(data.HighScore);
-            //_highScore.text = highScore.ToString();
+            _scoreDisplay.gameObject.SetActive(false);
+            var data = SaveSystem.LoadPlayerData();
+            if (data == null)
+            {
+                _highScoreDisplay.text = string.Empty;
+                return;
+            }
+            int highScore = Mathf.FloorToInt(data.HighScore);
+            _highScoreDisplay.text = highScore.ToString();
         }
 
         private void UpdateMultiplierValue(int value)
         {
-            _timer.gameObject.SetActive(true);
-            _timer.UpdateMultiplierValue(value);
+            _scoreDisplay.gameObject.SetActive(true);
+            _scoreDisplay.UpdateMultiplierValue(value);
         }
 
         private void UpdatePointsValue(float value)
         {
-            _timer.UpdateScoreValue(value);
+            _scoreDisplay.UpdateScoreValue(value);
         }
 
         public void Clear()
         {
-            _timer.Clear();
+            _scoreDisplay.Clear();
         }
     }
 }
