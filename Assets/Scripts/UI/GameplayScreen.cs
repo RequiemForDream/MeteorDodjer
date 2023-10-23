@@ -9,8 +9,12 @@ namespace UI
     {
         [SerializeField] private ScoreDisplay _scoreDisplay;
         [SerializeField] private TMP_Text _highScoreDisplay;
+        [SerializeField] private SafeArea _safeArea;
 
-        protected override void OnAwake() { }
+        protected override void OnAwake()
+        {
+            _safeArea.UpdateSafeArea();
+        }
 
         public void Construct(MultiplierCounter multiplierCounter, IListenersHandler<IInitializable> initializator,
             IListenersHandler<IClearable> clearer, ScoreCounter scoreCounter, GameplayScreenModel gameplayScreenModel)
@@ -28,7 +32,7 @@ namespace UI
             var data = SaveSystem.LoadPlayerData();
             if (data == null)
             {
-                _highScoreDisplay.text = string.Empty;
+                _highScoreDisplay.text = null;
                 return;
             }
             int highScore = Mathf.FloorToInt(data.HighScore);

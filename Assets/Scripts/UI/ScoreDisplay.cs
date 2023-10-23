@@ -89,6 +89,7 @@ namespace UI
             _timerImage.fillAmount = 1f;
             gameObject.SetActive(false);
             _bonusScore = 0f;
+            _multiplierXscoreDisplay.text = null;
         }
 
         public void Clear()
